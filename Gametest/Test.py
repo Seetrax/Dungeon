@@ -11,6 +11,9 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
+animation_filenames = ["Photos/Agent/p1.png","Photos/Agent/p2.png", "Photos/Agent/p3.png", "Photos/Agent/p4.png", "Photos/Agent/p5.png", "Photos/Agent/p6.png"]
+animation_images = [pygame.image.load(filename) for filename in animation_filenames]
+
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Grid Game")
@@ -25,6 +28,11 @@ def draw_grid():
 
 def draw_player(x, y):
     pygame.draw.rect(screen, GREEN, (x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE))
+
+#setting up the animation parameters
+animation_delay = 100  # delay in milliseconds between animation frames
+animation_frame = 0
+
 
 running = True
 while running:
@@ -48,7 +56,16 @@ while running:
 
     draw_grid()
     draw_player(player_x, player_y)
+
+    #Display the current animation frame
+    screen.blit(animation_images[animation_frame], (player_x * GRID_SIZE, player_y * GRID_SIZE))
+
     pygame.display.flip()
+
+    #move to the next animation frame
+    animation_frame = (animation_frame + 1) % len(animation_images)
+
+    pygame.time.delay(animation_delay)
 
 pygame.quit()
 sys.exit()
