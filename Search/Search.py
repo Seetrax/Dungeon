@@ -16,7 +16,7 @@ class SearchProblem:
         return None
 
 
-class PositionSearchProblem(SearchProblem):
+class PosProblem(SearchProblem):
 
     def __init__(self, gameState,world,goal=(1,1), costFn = lambda x: 1, start=None):
         """
@@ -340,7 +340,7 @@ def nullHeuristic(state, problem=None):
 def mh(x1,problem):
     x2=problem.goal
     return abs(x1[0] - x2[0]) + abs(x1[1] - x2[1])
-def aStarSearch(problem, heuristic=nullHeuristic):
+def astar(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     visited2=[]
