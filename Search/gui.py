@@ -17,7 +17,7 @@ DIRECTION_L=0
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-args = {'world':'Medmaze.txt','omni':True,'player':'agent','method':'bfs'}
+args = {'world':os.path.join('mazes','Medmaze.txt'),'omni':True,'player':'agent','method':'bfs'}
 W=World()
 W.generate_world(args['world'])
 WIDTH, HEIGHT = 800,700
@@ -148,6 +148,12 @@ def game(args):
         
         if args['method']=='bfs':
             acts=Search.bfs(problem)
+        if args['method']=='dfs':
+            acts=Search.dfs(problem)
+        if args['method']=='ucs':
+            acts=Search.ucs(problem)
+        if args['method']=='a*':
+            acts=Search.astar(problem)
             
         curr_act=acts[index]
     running = True
@@ -192,7 +198,7 @@ def game(args):
                             world.world[player_y][player_x].append('.')
                         DIRECTION=0
         elif player=='agent':
-                    if frames == 10:
+                    if frames == args['frames']:
             
                         index+=1
                         curr_act=acts[index]

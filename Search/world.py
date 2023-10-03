@@ -1,6 +1,11 @@
 from file_parser import File_Parser
 # from pandas import *
 
+'''The world class takes all information that a particular configuration of
+the game specifies. It consists of all information about the game before it
+begins (such as no of columns, rows, gold pos pit pos etc.) It is not required
+for you to read this file, rather think of it as an abstract class that gives
+the gamestate required info'''
 class World:
     def __init__(self):
         self.world = [[]]
@@ -12,9 +17,11 @@ class World:
         self.cave_entrance_row = 0
         self.cave_entrance_col = 0
         self.num_agents=0
+        self.agent_pos=()
         self.pits_pos=[]
         self.gold_pos=[]
         self.lion_pos=[]
+        self.score=0
     def generate_world(self, file_name):
 
         file_parser = File_Parser(file_name)
@@ -32,7 +39,7 @@ class World:
 
         self.agent_row = int(file_parser.agent[1])
         self.agent_col = int(file_parser.agent[2])
-        
+        self.agent_pos=(self.agent_col,self.agent_row)
         self.world[self.agent_row][self.agent_col].append('A')
         '''if len(file_parser.wumpus)>1:
             
@@ -67,7 +74,7 @@ class World:
         # print(DataFrame(self.world))
 
 
-        self.populate_indicators()
+        #self.populate_indicators()
 
     def populate_indicators(self):
 
@@ -84,28 +91,28 @@ class World:
 
                         try:
                             if i-1 >= 0 and (j,i-1) not in self.wall_pos:
-                                if 'S' not in self.world[i-1][j]:
+                                if 'R' not in self.world[i-1][j]:
                                     self.world[i-1][j].append('R')
                         except IndexError:
                             pass
 
                         try:
                             if j+1 < self.num_cols and (j+1,i) not in self.wall_pos:
-                                if 'S' not in self.world[i][j+1]:
+                                if 'R' not in self.world[i][j+1]:
                                     self.world[i][j+1].append('R')
                         except IndexError:
                             pass
 
                         try:
                             if i+1 < self.num_rows and (j,i+1) not in self.wall_pos:
-                                if 'S' not in self.world[i+1][j]:
+                                if 'R' not in self.world[i+1][j]:
                                     self.world[i+1][j].append('R')
                         except IndexError:
                             pass
 
                         try:
                             if j-1 >= 0 and (j-1,i) not in self.wall_pos:
-                                if 'S' not in self.world[i][j-1]:
+                                if 'R' not in self.world[i][j-1]:
                                     self.world[i][j-1].append('R')
                         except IndexError:
                             pass

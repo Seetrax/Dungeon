@@ -7,7 +7,9 @@ P 0 3   # 1st pit coordinates
 P 1 2   # 2nd pit coordinates
 P 3 2   # 3rd pit coordinates
 """
-
+'''File parser class reads the configuration of the level given as txt file
+and gives a 2D array which is essential for GameState and world classes to
+produce level information'''
 class File_Parser:
     def __init__(self, world_file):
         self.row_col = []
@@ -26,17 +28,7 @@ class File_Parser:
         self.agent = file.readline()
         self.agent = self.agent.rstrip('\r\n')
         self.agent = self.agent.split(" ")
-        # print(self.agent)
-
-        '''self.wumpus = file.readline()
-        self.wumpus = self.wumpus.rstrip('\r\n')
-        self.wumpus = self.wumpus.split(" ")
-        # print(self.wumpus)
-
-        self.gold = file.readline()
-        self.gold = self.gold.rstrip('\r\n')
-        self.gold = self.gold.split(" ")'''
-        # print(self.gold)
+        
 
         self.golds=[]
         self.pits = []
