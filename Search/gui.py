@@ -157,7 +157,6 @@ def game(args):
             
         curr_act=acts[index]
     running = True
-    print(world.world)
     while running:
         if countl<31:
             countl+=1
@@ -261,7 +260,6 @@ def game(args):
             running=False
         pygame.display.flip()
         clock.tick(fps)
-    print(world.world)
     if lost==True:
         print("YOU LOST")
     elif lost==False:
