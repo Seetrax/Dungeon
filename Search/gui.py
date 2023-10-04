@@ -17,7 +17,7 @@ DIRECTION_L=0
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-args = {'world':os.path.join('mazes','Medmaze.txt'),'omni':True,'player':'agent','method':'bfs'}
+args = {'world':os.path.join('mazes','Medmaze.txt'),'frames':10,'omni':True,'player':'agent','method':'bfs'}
 W=World()
 W.generate_world(args['world'])
 WIDTH, HEIGHT = 800,700
@@ -157,7 +157,7 @@ def game(args):
             
         curr_act=acts[index]
     running = True
-    
+    print(world.world)
     while running:
         if countl<31:
             countl+=1
@@ -232,12 +232,13 @@ def game(args):
                         if '.' not in world.world[player_y][player_x]:
                             world.world[player_y][player_x].append('.')
                         DIRECTION=0
-                        curr_act=None                    
+                        curr_act=None
+                    world.agent_pos=(player_x,player_y)
 
         screen.fill((0, 0,0))
         screen.blit(BG, (0, 0))
         #draw_grid()
-        draw_player(player_x,player_y,screen)
+        draw_player(world.agent_pos[0],world.agent_pos[1],screen)
         for i in range(world.num_rows):
             for j in range(world.num_cols):
                 if 'L' in world.world[i][j]:
@@ -260,6 +261,7 @@ def game(args):
             running=False
         pygame.display.flip()
         clock.tick(fps)
+    print(world.world)
     if lost==True:
         print("YOU LOST")
     elif lost==False:

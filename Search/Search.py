@@ -11,7 +11,7 @@ isGoalState :
     checks whetjer the agent has reached goal state
 getSuccessors :
     generates successors for a given state of the agent (position)
-getCostofActions
+getCostofActions'''
 class SearchProblem:
     def getStartState(self):
         return None
@@ -21,7 +21,7 @@ class SearchProblem:
 
     def getSuccessors(self, state):
         
-        return None'''
+        return None
 
 
 class PosProblem(SearchProblem):
@@ -296,7 +296,7 @@ def astar(problem, heuristic=nullHeuristic):
 
 
 ##Methods :
-bfs=BreadthFirstSearch
+'''bfs=BreadthFirstSearch
 dfs=DepthFirstSearch
 ucs=UniformCostSearch
-astar=AstarSearch
+astar=AstarSearch'''
