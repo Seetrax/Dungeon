@@ -11,7 +11,7 @@ isGoalState :
     checks whetjer the agent has reached goal state
 getSuccessors :
     generates successors for a given state of the agent (position)
-getCostofActions
+getCostofActions'''
 class SearchProblem:
     def getStartState(self):
         return None
@@ -21,7 +21,7 @@ class SearchProblem:
 
     def getSuccessors(self, state):
         
-        return None'''
+        return None
 
 
 class PosProblem(SearchProblem):
@@ -81,7 +81,7 @@ class PosProblem(SearchProblem):
 ''' Write ur implementation of dfs in this function.
 Dfs explores the entire depth of the tree from a node
 before it starts exploration of nest node'''
-def dfs(problem):
+def depthFirstSearch(problem):
     
     visited2=[]
     parent2={}
@@ -124,7 +124,7 @@ def dfs(problem):
     act=act[::-1]
 
     return act
-def bfs(problem):
+def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
 
     visited2=[]
@@ -173,7 +173,7 @@ def bfs(problem):
 
     return act
 
-def ucs(problem):
+def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     visited2=[]
@@ -237,7 +237,7 @@ def nullHeuristic(state, problem=None):
 def mh(x1,problem):
     x2=problem.goal
     return abs(x1[0] - x2[0]) + abs(x1[1] - x2[1])
-def astar(problem, heuristic=nullHeuristic):
+def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     visited2=[]
@@ -296,7 +296,12 @@ def astar(problem, heuristic=nullHeuristic):
 
 
 ##Methods :
-bfs=BreadthFirstSearch
+'''bfs=BreadthFirstSearch
 dfs=DepthFirstSearch
 ucs=UniformCostSearch
-astar=AstarSearch
+astar=AstarSearch'''
+# Abbreviations
+bfs = breadthFirstSearch
+dfs = depthFirstSearch
+astar = aStarSearch
+ucs = uniformCostSearch

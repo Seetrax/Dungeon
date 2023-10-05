@@ -331,6 +331,9 @@ def getDisplay(graphicsByDefault, options=None):
 
 if __name__ == '__main__':
     options = readCommand(sys.argv)
+    # print 
+    print("printing : ", options)
+    # printEnd
     if options.generateSolutions:
         confirmGenerate()
     codePaths = options.studentCode.split(',')
@@ -342,8 +345,14 @@ if __name__ == '__main__':
     # moduleDict = loadModuleDict(moduleCodeDict)
 
     moduleDict = {}
+    # print 
+    print("printing : ", codePaths)
+    # printEnd
     for cp in codePaths:
         moduleName = re.match('.*?([^/]*)\.py', cp).group(1)
+        # print 
+        print("printing : ", moduleName)
+        # printEnd
         moduleDict[moduleName] = loadModuleFile(moduleName, os.path.join(options.codeRoot, cp))
     moduleName = re.match('.*?([^/]*)\.py', options.testCaseCode).group(1)
     moduleDict['projectTestClasses'] = loadModuleFile(moduleName, os.path.join(options.codeRoot, options.testCaseCode))
