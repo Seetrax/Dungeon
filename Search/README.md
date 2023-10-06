@@ -5,7 +5,7 @@
 	* ```pacman.py``` in Pacman holds the logic for the classic pacman game along with the main code to run a game. Similarily ```gui.py``` in Dungeons holds the logic for the classic dungeon game along with the main code to run a game
 * can't find ```search``` in ```search``` module and therefore ```SearchProblem```
 * ```searchTestClasses.py``` line ```373``` ```from game import Actions``` is commented. 
-* Wherever ````search.py``` and ```searchAgents.py``` having role with ```moduleDict```, change them to ```Search.py```. 
+* Wherever ```search.py``` and ```searchAgents.py``` having role with ```moduleDict```, change them to ```Search.py```. 
 # Questions : 
 * How autograder evaluated first four tests without even finishing the debugging in autograder? 
 	* There are five tests, out of which fifth is tough. First debug fifth and then think about debugging others. 
