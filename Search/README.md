@@ -12,3 +12,11 @@
 
 # Getting information about the world 
 * In Pacman, the arena is encoded using characters like ```%```. Some functions decode it and get the information about the walls and all. In Dungeons, the arena is specified by mentioning the wall positions explicitely.
+
+
+## Major Changes done in autograder and related files to make Dungeons gradable
+
+# In maze.py
+* Commented ```from game import Grid``` in ```line 16``` since Grid's necessity didn't occur till now. 
+
+* I am changing file names and then editing. 
