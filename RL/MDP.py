@@ -52,6 +52,7 @@ class MDP:
         """
         Return list of possible actions from 'state'.
         """
+        
         if self.Terminal(state):
             return []
         lis=[]

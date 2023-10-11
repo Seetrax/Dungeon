@@ -17,7 +17,7 @@ np = no pit
 #import time
 
 class Agent:
-    def __init__(self, world, label_grid,omni=False):
+    def __init__(self, world,omni=False):
         self.world = world
         self.omni=omni
         if omni==False:
@@ -42,10 +42,10 @@ class Agent:
         self.found_gold = False # self.exit_cave(found_gold)
         self.took_gold = False
         self.exited = False
-        self.label_grid = label_grid
-        self.repaint_world()
 
-    
+        # print(DataFrame(self.world_knowledge))
+        # print("Agent: [" + str(self.world.agent_row) + ", " + str(self.world.agent_col) + "]")
+
 
     def repaint_world(self):
         for i in range(self.world.num_rows):
@@ -67,8 +67,8 @@ class Agent:
                 updated_str=""
 
                 self.label_grid[i][j].change_text(updated_str.join(updated_text))
-                if '.' in self.world_knowledge[i][j]:
-                    self.label_grid[i][j].label.config(bg="gray40")
+                '''if '.' in self.world_knowledge[i][j]:
+                    self.label_grid[i][j].label.config(bg="gray40")'''
                 self.label_grid[i][j].label.update()
         # print("repainted")
 
@@ -114,7 +114,6 @@ class Agent:
 
     def move(self, direction,index):
         
-        self.repaint_world()
         if self.found_gold == True and self.took_gold == False:
             self.took_gold == True
             if 'G' in self.world_knowledge[self.world.agent_row][self.world.agent_col]:

@@ -3,9 +3,9 @@ import random,util,math
 import copy
 
 class QLearningAgent(ReinforcementAgent):
-    def __init__(self, world,label_grid,omni=False, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1):
+    def __init__(self, world,omni=False, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1):
         "You can initialize Q-values here..."
-        ReinforcementAgent.__init__(self, world,label_grid,omni=False, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1)
+        ReinforcementAgent.__init__(self, world,omni=False, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1)
         "*** YOUR CODE HERE ***"
         self.Q=util.Counter()
     def getQValue(self, state, action):

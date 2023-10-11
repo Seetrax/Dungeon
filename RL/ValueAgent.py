@@ -1,7 +1,7 @@
 from lAgents import ValueEstAgent
 import MDP,util
 class ValueIterAgent(ValueEstAgent):
-    def __init__(self,world,label_grid,omni=False, discount = 0.9, iterations = 100):
+    def __init__(self,world,omni=False, discount = 0.9, iterations = 100):
         self.world = world
         self.omni=omni
         if omni==False:
@@ -26,8 +26,6 @@ class ValueIterAgent(ValueEstAgent):
         self.found_gold = False # self.exit_cave(found_gold)
         self.took_gold = False
         self.exited = False
-        self.label_grid = label_grid
-        self.repaint_world()
         self.mdp = MDP.MDP(world)
         self.discount = discount
         self.iterations = iterations

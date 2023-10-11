@@ -64,7 +64,7 @@ class ReinforcementAgent(ValueEstAgent):
     def isInTesting(self):
         return not self.isInTraining()
 
-    def __init__(self, world,label_grid,omni=False, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1):
+    def __init__(self, world,omni=False, numTraining=100, epsilon=0.5, alpha=0.5, gamma=1):
         """
         actionFn: Function which takes a state and returns the list of legal actions
 
@@ -97,8 +97,6 @@ class ReinforcementAgent(ValueEstAgent):
         self.found_gold = False # self.exit_cave(found_gold)
         self.took_gold = False
         self.exited = False
-        self.label_grid = label_grid
-        self.repaint_world()
 
 
         self.episodesSoFar = 0
