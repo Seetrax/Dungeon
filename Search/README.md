@@ -1,4 +1,5 @@
 # Main Changes to Notice
+* VERY NEW : I am putting all ```searchAgents.py``` stuffs to ```Search.py``` stuff to minimise the error for the time being
 * New : I am making ```searchAgents.py``` seperately. 
 * Analogy of Pacman's```search.py``` and ```searchAgents.py``` in Dungeons can be a single file. 
 * ```mazes``` is renamed to ```layout```

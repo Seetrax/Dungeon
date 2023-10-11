@@ -20,9 +20,11 @@ import textwrap
 # import project specific code
 #import layout
 import maze
+from world import World
 #import pacman
 import gui
 from Search import SearchProblem
+import game
 
 # helper function for printing solutions in solution files
 def wrap_solution(solution):
@@ -266,25 +268,40 @@ class PacmanSearchTest(testClasses.TestCase):
     def __init__(self, question, testDict):
         super(PacmanSearchTest, self).__init__(question, testDict)
         self.layout_text = testDict['layout']
+        print(self.layout_text)
         self.alg = testDict['algorithm']
-        self.layoutName = testDict['layoutName']
+        # self.layoutName = testDict['layoutName']
 
         # TODO: sensible to have defaults like this?
-        self.leewayFactor = float(testDict.get('leewayFactor', '1'))
+        # self.leewayFactor = float(testDict.get('leewayFactor', '1'))
         self.costFn = eval(testDict.get('costFn', 'None'))
         self.searchProblemClassName = testDict.get('searchProblemClass', 'PositionSearchProblem')
-        self.heuristicName = testDict.get('heuristic', None)
+        # self.heuristicName = testDict.get('heuristic', None)
+        self.world = World()
+        self.world.generate_world('Bigmaze.txt')
 
 
     def getSolInfo(self, search):
+        print(search)
+        # here we have to get the test file, solution file. remove avastha of gamestate need world
         alg = getattr(search, self.alg)
         print("alg : ",alg)
         print()
-        lay = maze.Layout([l.strip() for l in self.layout_text.split('\n')])
-        start_state = pacman.GameState()
-        start_state.initialize(lay, 0)
+        lay = maze.Maze([l.strip() for l in self.layout_text.split('\n')])
+        # cannot print staart state. One soluion is to put GameState in pacman analog
+        world = World()
+        world.generate_world('Bigmaze.txt')
+        # start_state = game.GameState(world).start_state
 
-        problemClass = getattr(searchAgents, self.searchProblemClassName)
+        # hardcoding start_state
+        # start_state = (0,0)
+        # start_state.initialize(lay, 0)
+        # this is just having the informations of the world. We can call our world setup here. 
+
+        
+
+        # problemClass = getattr(searchAgents, self.searchProblemClassName)
+        problemClass = getattr(search, self.searchProblemClassName)
         problemOptions = {}
         if self.costFn != None:
             problemOptions['costFn'] = self.costFn

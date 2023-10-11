@@ -13,14 +13,16 @@
 
 
 from util import manhattanDistance
-#from game import Grid
+from game import Grid
 import os
 import random
 from functools import reduce
+from file_parser import File_Parser
+from world import World
 
 VISIBILITY_MATRIX_CACHE = {}
 
-class Layout:
+class Maze:
     """
     A Layout manages the static information about the game board.
     """
@@ -28,16 +30,21 @@ class Layout:
     def __init__(self, layoutText):
         self.width = len(layoutText[0])
         self.height= len(layoutText)
-        # self.walls = #Grid(self.width, self.height, False)
+        self.walls = Grid(self.width, self.height, False)
+        # self.walls = self.generateWalls(layoutText) #Grid(self.width, self.height, False)
         # self.food = Grid(self.width, self.height, False)
-        self.capsules = []
-        self.agentPositions = []
-        self.numGhosts = 0
-        self.processLayoutText(layoutText)
-        self.layoutText = layoutText
-        self.totalFood = len(self.food.asList())
+        # self.capsules = []
+        # self.agentPositions = []
+        # self.numGhosts = 0
+        # self.processLayoutText(layoutText)
+        # self.layoutText = layoutText
+        # self.totalFood = len(self.food.asList())
         # self.initializeVisibilityMatrix()
 
+    def generateWalls(self, layoutText):
+        W = World()
+        W.generate_world(layoutText)
+        self.walls = W
     def getNumGhosts(self):
         return self.numGhosts
 

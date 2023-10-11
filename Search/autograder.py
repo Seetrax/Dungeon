@@ -250,50 +250,90 @@ def evaluate(generateSolutions, testRoot, moduleDict, exceptionMap=ERROR_HINT_MA
     # imports of testbench code.  note that the testClasses import must follow
     # the import of student code due to dependencies
     import testParser
+    # testParser is a class containing methods removeComments, parse - (parse test cases ig) and a property path. 
     import testClasses
+    # testClasses contains class Question, some classes for various types of Questions and class TestCase which is a template modelling a generic test case
+
+    # moduleDict is a list contains 'Search' and 'projectTestClasses'. 
+    # projectTestClasses === searchTestClasses
+    # searchTestClasses contain classes of GraphSearch, parseHeuristic, graphSearchTest, PacmanSearchTest, getStatesFromPath, CornerProblemsTest, HeuristicTest, HeuristicGrade, ClosestDotTest, 
+    # CornerHeuristicSanity and CornerHeuristicPacman. 
     for module in moduleDict:
         setattr(sys.modules[__name__], module, moduleDict[module])
 
     questions = []
     questionDicts = {}
+    # test_subdirs = ['q1']
     test_subdirs = getTestSubdirs(testParser, testRoot, questionToGrade)
     for q in test_subdirs:
+        # subdir_path = 'test_cases/q1'
         subdir_path = os.path.join(testRoot, q)
         if not os.path.isdir(subdir_path) or q[0] == '.':
             continue
 
         # create a question object
         questionDict = testParser.TestParser(os.path.join(subdir_path, 'CONFIG')).parse()
+	# questionDict contains the following : 
+	# {'__raw_lines__': ['max_points: "3"', 'class: "PassAllTestsQuestion"', ''], 'path': 'test_cases/q1/CONFIG', '__emit__': [('oneline', 'max_points'), ('oneline', 'class'), ('raw', '')], 'max_points': '3', 'class': 'PassAllTestsQuestion'}
+
         questionClass = getattr(testClasses, questionDict['class'])
+        # questionClass is an instance of class PassAllTestQuestions in testClasses
         question = questionClass(questionDict, display)
         questionDicts[q] = questionDict
+        
+        """
+        questionDicts[q] contain the following : 
+        {'__raw_lines__': ['max_points: "3"', 'class: "PassAllTestsQuestion"', ''], 'path': 'test_cases/q1/CONFIG', '__emit__': [('oneline', 'max_points'), ('oneline', 'class'), ('raw', '')], 'max_points': '3', 'class': 'PassAllTestsQuestion'}
+        """
+        # config contain maxpoints and PassAllTestsClass. 
 
         # load test cases into question
         tests = filter(lambda t: re.match('[^#~.].*\.test\Z', t), os.listdir(subdir_path))
         tests = map(lambda t: re.match('(.*)\.test\Z', t).group(1), tests)
+	# tests is something, which if we iterate through it, we get tests we have to perform. In this, 
+	# we are doing graph_backtrack, graph_bfs_vs_dfs, graph_infninite, graph_manypaths and pacman_1. We have to replace pacman_1 with something
         for t in sorted(tests):
+            # path to the test_file
             test_file = os.path.join(subdir_path, '%s.test' % t)
+	    # path to the solution_file
             solution_file = os.path.join(subdir_path, '%s.solution' % t)
+	    # test_out_file is the path to the file to which test probably writes out test output to a test. 
             test_out_file = os.path.join(subdir_path, '%s.test_output' % t)
+	    # parsed test_file is stored in testDict. 
+	    # The things in .test file is stored as it is in testDict...
             testDict = testParser.TestParser(test_file).parse()
+            
+	    # if .test file contains 'disabled' or 'false', then the test is not performed. 
             if testDict.get("disabled", "false").lower() == "true":
                 continue
+            
+            # saves file to which test output is written is saved in dict
             testDict['test_out_file'] = test_out_file
+            
+            # testClass is class for evaluation. eg : <class 'searchTestClasses.GraphSearchTest'>
             testClass = getattr(projectTestClasses, testDict['class'])
+	    # question : <testClasses.PassAllTestsQuestion object at 0x101dfab90
             testCase = testClass(question, testDict)
             def makefun(testCase, solution_file):
+                # in this search generateSolutions = False for all tests. 
                 if generateSolutions:
                     # write solution file to disk
                     return lambda grades: testCase.writeSolution(moduleDict, solution_file)
                 else:
                     # read in solution dictionary and pass as an argument
+                    # same testDict
                     testDict = testParser.TestParser(test_file).parse()
+                    # print solutionDict
                     solutionDict = testParser.TestParser(solution_file).parse()
+                    # printTestCase is false. 
                     if printTestCase:
                         return lambda grades: printTest(testDict, solutionDict) or testCase.execute(grades, moduleDict, solutionDict)
                     else:
+                        # returning function <function evaluate.<locals>.makefun.<locals>.<lambda> at 0x104354cc0>
                         return lambda grades: testCase.execute(grades, moduleDict, solutionDict)
+            # question.addTestCase is None. 
             question.addTestCase(testCase, makefun(testCase, solution_file))
+
 
         # Note extra function is necessary for scoping reasons
         def makefun(question):
@@ -301,14 +341,20 @@ def evaluate(generateSolutions, testRoot, moduleDict, exceptionMap=ERROR_HINT_MA
         setattr(sys.modules[__name__], q, makefun(question))
         questions.append((q, question.getMaxPoints()))
 
+    # grades object is grades object in grading.py
     grades = grading.Grades(projectParams.PROJECT_NAME, questions,
                             gsOutput=gsOutput, edxOutput=edxOutput, muteOutput=muteOutput)
+    # questionToGrade = 'q1'
     if questionToGrade == None:
         for q in questionDicts:
             for prereq in questionDicts[q].get('depends', '').split():
                 grades.addPrereq(q, prereq)
 
+
+    # till now it seems the question is not being evaluated. 
+    # sys.modules[__name__] is the gradingModule : the module with all grading functions. 
     grades.grade(sys.modules[__name__], bonusPic = projectParams.BONUS_PIC)
+    print(grades.points)
     return grades.points
 
 
@@ -328,36 +374,50 @@ def getDisplay(graphicsByDefault, options=None):
 
 
 
-
 if __name__ == '__main__':
     options = readCommand(sys.argv)
-    # print 
-    print("printing : ", options)
-    # printEnd
+    """
+    # options is a dictionary consist of values of all the arguments. 
+    # when autograder.py -q q1 is called : the dict is 
+    {'generateSolutions': False, 'edxOutput': False, 'gsOutput': False, 'muteOutput': False, 
+    'printTestCase': False, 'noGraphics': False, 'testRoot': 'test_cases', 'studentCode': 'Search.py', 
+   'codeRoot': '', 'testCaseCode': 'searchTestClasses.py', 'runTest': None, 'gradeQuestion': 'q1'}
+    """
+    # leave this if code
     if options.generateSolutions:
         confirmGenerate()
+
+    # codePaths = ['Search.py']
     codePaths = options.studentCode.split(',')
+    # codePaths = ['Search.py']
+    
+    # already commented code
+    """
     # moduleCodeDict = {}
     # for cp in codePaths:
     #     moduleName = re.match('.*?([^/]*)\.py', cp).group(1)
     #     moduleCodeDict[moduleName] = readFile(cp, root=options.codeRoot)
     # moduleCodeDict['projectTestClasses'] = readFile(options.testCaseCode, root=options.codeRoot)
     # moduleDict = loadModuleDict(moduleCodeDict)
+    """
 
     moduleDict = {}
-    # print 
-    print("printing : ", codePaths)
-    # printEnd
     for cp in codePaths:
+        # cp = 'Search.py'
+	# moduleName = 'Search'
         moduleName = re.match('.*?([^/]*)\.py', cp).group(1)
-        # print 
-        print("printing : ", moduleName)
-        # printEnd
         moduleDict[moduleName] = loadModuleFile(moduleName, os.path.join(options.codeRoot, cp))
+	# currently codeRoot is empty string. 
     moduleName = re.match('.*?([^/]*)\.py', options.testCaseCode).group(1)
+    # moduleName = 'searchTestClasses'
     moduleDict['projectTestClasses'] = loadModuleFile(moduleName, os.path.join(options.codeRoot, options.testCaseCode))
+    # {'Search': <module 'Search' from '/Users/amithabh_a/Desktop/OELP/Dungeon/Search/Search.py'>, 'projectTestClasses': <module 'searchTestClasses' from '/Users/amithabh_a/Desktop/OELP/Dungeon/Search/searchTestClasses.py'>}
 
+    # projectTestClasses : searchTestClasses
+    # searchTestClasses contain classes of GraphSearch, parseHeuristic, graphSearchTest, PacmanSearchTest, getStatesFromPath, CornerProblemsTest, HeuristicTest, HeuristicGrade, ClosestDotTest, 
+    # CornerHeuristicSanity and CornerHeuristicPacman. 
 
+    # options.runTest = None
     if options.runTest != None:
         runTest(options.runTest, moduleDict, printTestCase=options.printTestCase, display=getDisplay(True, options))
     else:

@@ -20,6 +20,7 @@ import json
 import traceback
 from collections import defaultdict
 import util
+import sys
 
 class Grades:
   "A data structure for project grades, along with formatting code to display them"
@@ -33,15 +34,18 @@ class Grades:
     self.questions = [el[0] for el in questionsAndMaxesList]
     self.maxes = dict(questionsAndMaxesList)
     self.points = Counter()
+    # self.messages = { 'q1' : []}
     self.messages = dict([(q, []) for q in self.questions])
     self.project = projectName
     self.start = time.localtime()[1:6]
     self.sane = True # Sanity checks
     self.currentQuestion = None # Which question we're grading
+    # following three lines set false
     self.edxOutput = edxOutput
     self.gsOutput = gsOutput  # GradeScope output
     self.mute = muteOutput
     self.prereqs = defaultdict(set)
+    # defaultdict(<class 'set'>, {})
 
     #print('Autograder transcript for %s' % self.project)
     print('Starting on %d-%d at %d:%02d:%02d' % self.start)
@@ -57,6 +61,7 @@ class Grades:
 
     completedQuestions = set([])
     for q in self.questions:
+      # q = 'q1'
       print('\nQuestion %s' % q)
       print('=' * (9 + len(q)))
       print
@@ -74,7 +79,13 @@ class Grades:
       if self.mute: util.mutePrint()
       try:
         # this is an important line. 
+        # print(getattr(gradingModule, q))
+        # print('error potential line')
+        # sys.exit(1)
+	# the below line straight go to __call__ in class TimeoutFunction in util. 
         util.TimeoutFunction(getattr(gradingModule, q),1800)(self) # Call the question's function
+        # print('error potential line over')
+        # sys.exit(1)
         #TimeoutFunction(getattr(gradingModule, q),1200)(self) # Call the question's function
       except Exception as inst:
         self.addExceptionMessage(q, inst, traceback)

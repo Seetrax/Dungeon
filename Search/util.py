@@ -624,8 +624,10 @@ class TimeoutFunction:
         # If we have SIGALRM signal, use it to cause an exception if and
         # when this function runs too long.  Otherwise check the time taken
         # after the method has returned, and throw an exception then.
+        print("i am in util init")
         if hasattr(signal, 'SIGALRM'):
             old = signal.signal(signal.SIGALRM, self.handle_timeout)
+	    # old = 0
             signal.alarm(self.timeout)
             try:
                 result = self.function(*args, **keyArgs)
