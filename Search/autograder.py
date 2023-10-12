@@ -18,6 +18,7 @@ import optparse
 import os
 import re
 import sys
+import csv
 import projectParams
 import random
 random.seed(0)
@@ -28,6 +29,7 @@ except:
 
 # register arguments and set default values
 def readCommand(argv):
+    args = dict()
     parser = optparse.OptionParser(description = 'Run public tests on student code')
     parser.set_defaults(generateSolutions=False, edxOutput=False, gsOutput=False, muteOutput=False, printTestCase=False, noGraphics=False)
     parser.add_option('--test-directory',
@@ -79,6 +81,9 @@ def readCommand(argv):
                     action = 'store_true',
                     help = 'No graphics display for pacman games.')
     (options, args) = parser.parse_args(argv)
+    # args2 = parser.parse_args(argv)
+    # if args2.question : args['method'] = 
+    print(options)
     return options
 
 
@@ -374,7 +379,19 @@ def getDisplay(graphicsByDefault, options=None):
 
 
 if __name__ == '__main__':
-    options = readCommand(sys.argv)
+    options = readCommand(sys.argv)   
+    question = options.gradeQuestion
+    method = None
+    f = open("files.csv",'r')
+    row = csv.reader(f)
+    for i in row:
+        if question == i[0]:
+           method = i[1]
+           break
+    f.close()
+    print(question)
+    print(method)
+    sys.exit(1)
     """
     # options is a dictionary consist of values of all the arguments. 
     # when autograder.py -q q1 is called : the dict is 

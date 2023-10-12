@@ -33,8 +33,8 @@ class GameState:
             self.data = GameStateData()
 
 
-    def initialize(self, world):
-        self.world=world
+    def initialize(self):
+        self.world = prevState.world
         self.agent_pos=(self.world.agent_col,self.world.agent_row)
         self.num_agents=world.num_agents
         self.gold_pos=world.gold_pos
@@ -259,7 +259,7 @@ class GameStateData:
         """
         if prevState != None:
             
-            self.agent_pos=(prevState.world.agent_col,prevState.world.agent_row)                                                                                                                                                    
+            self.agent_pos=(0,0)                                                                                                                                                    
             self.world=prevState.world
             self.num_agents=prevState.num_agents
             self.gold_pos=prevState.gold_pos
