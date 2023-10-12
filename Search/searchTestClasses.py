@@ -282,20 +282,26 @@ class PacmanSearchTest(testClasses.TestCase):
 
 
     def getSolInfo(self, search):
+        print('testDict')
+        print(self.testDict)
         print(search)
         # here we have to get the test file, solution file. remove avastha of gamestate need world
         alg = getattr(search, self.alg)
         print("alg : ",alg)
         print()
+	# lay is just the layout in string.  
+        print('layout_text')
+        print(self.layout_text)
         lay = maze.Maze([l.strip() for l in self.layout_text.split('\n')])
+        start_state = game.GameState()
         # cannot print staart state. One soluion is to put GameState in pacman analog
-        world = World()
-        world.generate_world('Bigmaze.txt')
+        # world = World()
+        # world.generate_world('Bigmaze.txt')
         # start_state = game.GameState(world).start_state
 
         # hardcoding start_state
         # start_state = (0,0)
-        # start_state.initialize(lay, 0)
+        start_state.initialize(lay)
         # this is just having the informations of the world. We can call our world setup here. 
 
         
