@@ -17,38 +17,54 @@
 	game.py
 	Search.py
 ```
-Files to edit :
+* Files to edit :
+```
 	Search.py
 	Priority queue data structure from util.py 
-Question 1 :
-	Breadth first search strategy explores shallowest nodes first. It uses a queue to remember to get the next vertex to start a search, when a dead end occurs in any iteration.
-	The Breadth first search function is left empty in Search.py . Implement Breadth first search in Search.py to help the agent navigate through the shortest path through the  maze to the treasure. 
-Write your implementation in bfs function specified in Search.py
+```
 
-Use these three commands to see the Gameplay :
+# Question 1 :
+* 	Breadth first search strategy explores shallowest nodes first. It uses a queue to remember to get the next vertex to start a search, when a dead end occurs in any iteration.
+* 	The Breadth first search function is left empty in ```Search.py``` . Implement Breadth first search in ```Search.py``` to help the agent navigate through the shortest path through the  maze to the treasure. 
+* Write your implementation in bfs function specified in ```Search.py```
+
+* Use these three commands to see the Gameplay :
+```
 python dungeon.py -p agent -method bfs -graphics True -world smallmaze.txt
+```
+```
 python dungeon.py -p agent -method bfs -graphics True -world Medmaze.txt
+```
+```
 python dungeon.py -p agent -method bfs -graphics True -world Bigmaze.txt
+```
 
 
 
-Question 2 :
-	Depth first search strategy starts at the root (initial position )and examines each branch as far as possible before backtracking
-	Implement Depth first search in Search.py to help the agent navigate through the  maze to the treasure. 
-Write your implementation in dfs function specified in Search.py
+# Question 2 :
+*	Depth first search strategy starts at the root (initial position )and examines each branch as far as possible before backtracking
+*	Implement Depth first search in ```Search.py``` to help the agent navigate through the  maze to the treasure. 
+* Write your implementation in dfs function specified in ```Search.py```
+```
 python dungeon.py -p agent -method bfs -graphics True -world smallmaze.txt
+```
+```
 python dungeon.py -p agent -method bfs -graphics True -world Medmaze.txt
+```
+```
 python dungeon.py -p agent -method bfs -graphics True -world Bigmaze.txt
+```
 
 
-Question 3:
-	Uniform cost search strategy uses a priority queue data structure that uses the cost of attaining the next node as the value for ordering the nodes in the queue. This strategy always selects to the position with the least cost as successor.
-	Implement Uniform cost search in Search.py to help the agent navigate through the  maze to the treasure. Write your implementation in ucs function specified in Search.py
+# Question 3:
+*	Uniform cost search strategy uses a priority queue data structure that uses the cost of attaining the next node as the value for ordering the nodes in the queue. This strategy always selects to the position with the least cost as successor.
+*	Implement Uniform cost search in ```Search.py``` to help the agent navigate through the  maze to the treasure. Write your implementation in ucs function specified in ```Search.py```
 
-Question 4:
-	A star search strategy uses a priority queue that uses the specified heuristic of the next state as the value for ordering the nodes in the queue. This strategy always pops out the state with the least heuristic value as successor.
-	A* takes heuristic function also as an argument. The outline of heuristic function is specified in Search.py (takes two inputs : the state and search problem). Implement Uniform cost search in Search.py to help the agent navigate through the  maze to the treasure. 
-Write your implementation in astar function specified in Search.py
+# Question 4:
+*	A star search strategy uses a priority queue that uses the specified heuristic of the next state as the value for ordering the nodes in the queue. This strategy always pops out the state with the least heuristic value as successor.
+*	A* takes heuristic function also as an argument. The outline of heuristic function is specified in ```Search.py``` (takes two inputs : the state and search problem). Implement Uniform cost search in ```Search.py``` to help the agent navigate through the  maze to the treasure. 
+
+* Write your implementation in astar function specified in ```Search.py```
 
 
 
