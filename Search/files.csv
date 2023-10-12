@@ -1,5 +1,5 @@
-question, method, maxMarks
-'q1', 'breadthFirstSearch', 3
-'q2', 'depthFirstSearch', 3
-'q3', 'uniformCostSearch', 3
-'q4', 'aStarSearch', 3
+question, method, maxMarks, questionClasses
+'q1', 'breadthFirstSearch', 3, 'DungeonSearchTest'
+'q2', 'depthFirstSearch', 3, 'DungeonSearchTest'
+'q3', 'uniformCostSearch', 3, 'DungeonSearchTest'
+'q4', 'aStarSearch', 3, 'DungeonSearchTest'

@@ -21,28 +21,47 @@ import traceback
 from collections import defaultdict
 import util
 import sys
+import csv
 
 class Grades:
   "A data structure for project grades, along with formatting code to display them"
-  def __init__(self, projectName, questionsAndMaxesList,
+  def __init__(self, projectName = None, questionsAndMaxesList = None,
                gsOutput=False, edxOutput=False, muteOutput=False):
     """
     Defines the grading scheme for a project
       projectName: project name
       questionsAndMaxesDict: a list of (question name, max points per question)
     """
-    self.questions = [el[0] for el in questionsAndMaxesList]
-    self.maxes = dict(questionsAndMaxesList)
+    # self.questions = [el[0] for el in questionsAndMaxesList]
+
+    f = open('currentQuestion.csv', 'r')
+    row = csv.reader(f)
+
+    for i in row:
+        self.question = i[0] 
+    f.close()
+    f = open('files.csv', 'r')
+    row = csv.reader(f)
+    next(row)
+    for i in row:
+        if self.question == i[0]:
+            self.method = i[1]
+            self.maxes = i[2]
+            self.questionClass = i[3]
+    f.close()
+
+    # self.maxes = dict(questionsAndMaxesList)
     self.points = Counter()
     # self.messages = { 'q1' : []}
-    self.messages = dict([(q, []) for q in self.questions])
-    self.project = projectName
+    # self.messages = dict([(q, []) for q in self.questions])
+    self.messages ={self.question: []}
+    # self.project = projectName
     self.start = time.localtime()[1:6]
-    self.sane = True # Sanity checks
-    self.currentQuestion = None # Which question we're grading
+    # self.sane = True # Sanity checks
+    # self.currentQuestion = None # Which question we're grading
     # following three lines set false
-    self.edxOutput = edxOutput
-    self.gsOutput = gsOutput  # GradeScope output
+    # self.edxOutput = edxOutput
+    # self.gsOutput = gsOutput  # GradeScope output
     self.mute = muteOutput
     self.prereqs = defaultdict(set)
     # defaultdict(<class 'set'>, {})
@@ -60,7 +79,7 @@ class Grades:
     """
 
     completedQuestions = set([])
-    for q in self.questions:
+    for q in self.question:
       # q = 'q1'
       print('\nQuestion %s' % q)
       print('=' * (9 + len(q)))

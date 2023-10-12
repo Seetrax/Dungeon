@@ -248,26 +248,31 @@ def getTestSubdirs(testParser, testRoot, questionToGrade):
 
 
 # evaluate student code
-def evaluate(generateSolutions, testRoot, moduleDict, exceptionMap=ERROR_HINT_MAP,
+def evaluate(generateSolutions = None, testRoot = None, moduleDict = dict(), exceptionMap=ERROR_HINT_MAP,
              edxOutput=False, muteOutput=False, gsOutput=False,
             printTestCase=False, questionToGrade=None, display=None):
     # imports of testbench code.  note that the testClasses import must follow
     # the import of student code due to dependencies
-    import testParser
     # testParser is a class containing methods removeComments, parse - (parse test cases ig) and a property path. 
+    '''
+    import testParser
     import testClasses
+    '''
     # testClasses contains class Question, some classes for various types of Questions and class TestCase which is a template modelling a generic test case
 
     # moduleDict is a list contains 'Search' and 'projectTestClasses'. 
     # projectTestClasses === searchTestClasses
     # searchTestClasses contain classes of GraphSearch, parseHeuristic, graphSearchTest, PacmanSearchTest, getStatesFromPath, CornerProblemsTest, HeuristicTest, HeuristicGrade, ClosestDotTest, 
     # CornerHeuristicSanity and CornerHeuristicPacman. 
+    '''
     for module in moduleDict:
         setattr(sys.modules[__name__], module, moduleDict[module])
-
+    
     questions = []
     questionDicts = {}
+    '''
     # test_subdirs = ['q1']
+    '''
     test_subdirs = getTestSubdirs(testParser, testRoot, questionToGrade)
     for q in test_subdirs:
         # subdir_path = 'test_cases/q1'
@@ -344,16 +349,17 @@ def evaluate(generateSolutions, testRoot, moduleDict, exceptionMap=ERROR_HINT_MA
             return lambda grades: question.execute(grades)
         setattr(sys.modules[__name__], q, makefun(question))
         questions.append((q, question.getMaxPoints()))
-
+    '''
     # grades object is grades object in grading.py
-    grades = grading.Grades(projectParams.PROJECT_NAME, questions,
+    grades = grading.Grades(projectParams.PROJECT_NAME, question,
                             gsOutput=gsOutput, edxOutput=edxOutput, muteOutput=muteOutput)
     # questionToGrade = 'q1'
+    '''
     if questionToGrade == None:
         for q in questionDicts:
             for prereq in questionDicts[q].get('depends', '').split():
                 grades.addPrereq(q, prereq)
-
+   '''
 
     # till now it seems the question is not being evaluated. 
     # sys.modules[__name__] is the gradingModule : the module with all grading functions. 
@@ -382,16 +388,17 @@ if __name__ == '__main__':
     options = readCommand(sys.argv)   
     question = options.gradeQuestion
     method = None
-    f = open("files.csv",'r')
-    row = csv.reader(f)
-    for i in row:
-        if question == i[0]:
-           method = i[1]
-           break
+    f = open("currentQuestion.csv",'w')
+    wr = csv.writer(f)
+    wr.writerow([question])
+    # row = csv.reader(f)
+    # for i in row:
+    #     if question == i[0]:
+    #        method = i[1]
+    #        break
     f.close()
-    print(question)
-    print(method)
-    sys.exit(1)
+    # print(question)
+    # print(method)
     """
     # options is a dictionary consist of values of all the arguments. 
     # when autograder.py -q q1 is called : the dict is 
@@ -399,12 +406,13 @@ if __name__ == '__main__':
     'printTestCase': False, 'noGraphics': False, 'testRoot': 'test_cases', 'studentCode': 'Search.py', 
    'codeRoot': '', 'testCaseCode': 'searchTestClasses.py', 'runTest': None, 'gradeQuestion': 'q1'}
     """
+    
     # leave this if code
-    if options.generateSolutions:
-        confirmGenerate()
+    # if options.generateSolutions:
+    #     confirmGenerate()
 
     # codePaths = ['Search.py']
-    codePaths = options.studentCode.split(',')
+    # codePaths = options.studentCode.split(',')
     # codePaths = ['Search.py']
     
     # already commented code
@@ -417,16 +425,16 @@ if __name__ == '__main__':
     # moduleDict = loadModuleDict(moduleCodeDict)
     """
 
-    moduleDict = {}
-    for cp in codePaths:
+    # moduleDict = {}
+    # for cp in codePaths:
         # cp = 'Search.py'
 	# moduleName = 'Search'
-        moduleName = re.match('.*?([^/]*)\.py', cp).group(1)
-        moduleDict[moduleName] = loadModuleFile(moduleName, os.path.join(options.codeRoot, cp))
+        # moduleName = re.match('.*?([^/]*)\.py', cp).group(1)
+        # moduleDict[moduleName] = loadModuleFile(moduleName, os.path.join(options.codeRoot, cp))
 	# currently codeRoot is empty string. 
-    moduleName = re.match('.*?([^/]*)\.py', options.testCaseCode).group(1)
+    # moduleName = re.match('.*?([^/]*)\.py', options.testCaseCode).group(1)
     # moduleName = 'searchTestClasses'
-    moduleDict['projectTestClasses'] = loadModuleFile(moduleName, os.path.join(options.codeRoot, options.testCaseCode))
+    # moduleDict['projectTestClasses'] = loadModuleFile(moduleName, os.path.join(options.codeRoot, options.testCaseCode))
     # {'Search': <module 'Search' from '/Users/amithabh_a/Desktop/OELP/Dungeon/Search/Search.py'>, 'projectTestClasses': <module 'searchTestClasses' from '/Users/amithabh_a/Desktop/OELP/Dungeon/Search/searchTestClasses.py'>}
 
     # projectTestClasses : searchTestClasses
@@ -434,10 +442,11 @@ if __name__ == '__main__':
     # CornerHeuristicSanity and CornerHeuristicPacman. 
 
     # options.runTest = None
-    if options.runTest != None:
-        runTest(options.runTest, moduleDict, printTestCase=options.printTestCase, display=getDisplay(True, options))
-    else:
-        evaluate(options.generateSolutions, options.testRoot, moduleDict,
-            gsOutput=options.gsOutput,
-            edxOutput=options.edxOutput, muteOutput=options.muteOutput, printTestCase=options.printTestCase,
-            questionToGrade=options.gradeQuestion, display=getDisplay(options.gradeQuestion!=None, options))
+    # if options.runTest != None:
+    #    runTest(options.runTest, moduleDict, printTestCase=options.printTestCase, display=getDisplay(True, options))
+    # else:
+    #evaluate(options.generateSolutions, options.testRoot, moduleDict,
+    #        gsOutput=options.gsOutput,
+    #        edxOutput=options.edxOutput, muteOutput=options.muteOutput, printTestCase=options.printTestCase,
+    #        questionToGrade=options.gradeQuestion, display=getDisplay(options.gradeQuestion!=None, options))
+    evaluate()
