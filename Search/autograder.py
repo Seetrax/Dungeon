@@ -363,7 +363,9 @@ def evaluate(generateSolutions = None, testRoot = None, moduleDict = dict(), exc
 
     # till now it seems the question is not being evaluated. 
     # sys.modules[__name__] is the gradingModule : the module with all grading functions. 
-    grades.grade(sys.modules[__name__], bonusPic = projectParams.BONUS_PIC)
+    # grades.grade(sys.modules[__name__], bonusPic = projectParams.BONUS_PIC)
+    grades.grade()
+    print('I am out of grades')
     print(grades.points)
     return grades.points
 
@@ -386,10 +388,11 @@ def getDisplay(graphicsByDefault, options=None):
 
 if __name__ == '__main__':
     options = readCommand(sys.argv)   
-    question = options.gradeQuestion
+    question = str(options.gradeQuestion)
     method = None
     f = open("currentQuestion.csv",'w')
-    wr = csv.writer(f)
+    wr = csv.writer(f, delimiter = ',')
+    wr.writerow(['Question'])
     wr.writerow([question])
     # row = csv.reader(f)
     # for i in row:

@@ -33,6 +33,9 @@ class Grades:
       questionsAndMaxesDict: a list of (question name, max points per question)
     """
     # self.questions = [el[0] for el in questionsAndMaxesList]
+    self.maxes = None
+    self.method = None
+    self.questionClass = None
 
     f = open('currentQuestion.csv', 'r')
     row = csv.reader(f)
@@ -40,15 +43,20 @@ class Grades:
     for i in row:
         self.question = i[0] 
     f.close()
+    print(self.question)
     f = open('files.csv', 'r')
     row = csv.reader(f)
     next(row)
     for i in row:
-        if self.question == i[0]:
+        print(i[0])
+        print(self.question)
+        if int(i[0][2]) == int(self.question[1]):
+            print('True')
             self.method = i[1]
             self.maxes = i[2]
             self.questionClass = i[3]
     f.close()
+    sys.exit(1)
 
     # self.maxes = dict(questionsAndMaxesList)
     self.points = Counter()
@@ -72,14 +80,15 @@ class Grades:
   def addPrereq(self, question, prereq):
     self.prereqs[question].add(prereq)
 
-  def grade(self, gradingModule, exceptionMap = {}, bonusPic = False):
+  # def grade(self, gradingModule, exceptionMap = {}, bonusPic = False):
+  def grade(self, exceptionMap = {}):
     """
     Grades each question
       gradingModule: the module with all the grading functions (pass in with sys.modules[__name__])
     """
 
     completedQuestions = set([])
-    for q in self.question:
+    for q in [self.question]: # this listing of self.question is totally unwanted. 
       # q = 'q1'
       print('\nQuestion %s' % q)
       print('=' * (9 + len(q)))
