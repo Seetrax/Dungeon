@@ -53,10 +53,13 @@ class Grades:
         if int(i[0][2]) == int(self.question[1]):
             print('True')
             self.method = i[1]
-            self.maxes = i[2]
+            self.maxes = int(i[2])
             self.questionClass = i[3]
     f.close()
-    sys.exit(1)
+    print('maxes')
+    print(self.maxes)
+    print(self.method)
+    print(self.questionClass)
 
     # self.maxes = dict(questionsAndMaxesList)
     self.points = Counter()
@@ -111,7 +114,11 @@ class Grades:
         # print('error potential line')
         # sys.exit(1)
 	# the below line straight go to __call__ in class TimeoutFunction in util. 
+
+        print('before important util')
         util.TimeoutFunction(getattr(gradingModule, q),1800)(self) # Call the question's function
+        print('after important util')
+        sys.exit(1)
         # print('error potential line over')
         # sys.exit(1)
         #TimeoutFunction(getattr(gradingModule, q),1200)(self) # Call the question's function
