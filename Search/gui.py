@@ -260,6 +260,7 @@ def game(args):
             running=False
         pygame.display.flip()
         clock.tick(fps)
+    print(problem._expanded)
     if lost==True:
         print("YOU LOST")
     elif lost==False:
