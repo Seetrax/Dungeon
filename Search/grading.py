@@ -71,8 +71,8 @@ class Grades:
     # self.sane = True # Sanity checks
     # self.currentQuestion = None # Which question we're grading
     # following three lines set false
-    # self.edxOutput = edxOutput
-    # self.gsOutput = gsOutput  # GradeScope output
+    self.edxOutput = edxOutput
+    self.gsOutput = gsOutput  # GradeScope output
     self.mute = muteOutput
     self.prereqs = defaultdict(set)
     # defaultdict(<class 'set'>, {})
@@ -84,7 +84,7 @@ class Grades:
     self.prereqs[question].add(prereq)
 
   # def grade(self, gradingModule, exceptionMap = {}, bonusPic = False):
-  def grade(self, exceptionMap = {}):
+  def grade(self, gradingModule, exceptionMap = {}):
     """
     Grades each question
       gradingModule: the module with all the grading functions (pass in with sys.modules[__name__])
@@ -116,9 +116,11 @@ class Grades:
 	# the below line straight go to __call__ in class TimeoutFunction in util. 
 
         print('before important util')
-        util.TimeoutFunction(getattr(gradingModule, q),1800)(self) # Call the question's function
+        # util.TimeoutFunction(getattr(gradingModule, q),1800)(self) # Call the question's function
+        # <function evaluate.<locals>.makefun.<locals>.<lambda> at 0x105560680>
+        # util.TimeoutFunction(q,1800)(self) # Call the question's function
         print('after important util')
-        sys.exit(1)
+        # sys.exit(1)
         # print('error potential line over')
         # sys.exit(1)
         #TimeoutFunction(getattr(gradingModule, q),1200)(self) # Call the question's function
@@ -130,20 +132,21 @@ class Grades:
       finally:
         if self.mute: util.unmutePrint()
 
-      if self.points[q] >= self.maxes[q]:
+      if self.points[q] >= self.maxes:
         completedQuestions.add(q)
 
-      print('\n### Question %s: %d/%d ###\n' % (q, self.points[q], self.maxes[q]))
+      print('\n### Question %s: %d/%d ###\n' % (q, self.points[q], self.maxes))
 
 
     print('\nFinished at %d:%02d:%02d' % time.localtime()[3:6])
     print("\nProvisional grades\n==================")
 
-    for q in self.questions:
-      print('Question %s: %d/%d' % (q, self.points[q], self.maxes[q]))
+    for q in self.question:
+      print('Question %s: %d/%d' % (q, self.points[q], self.maxes))
     print('------------------')
-    print('Total: %d/%d' % (self.points.totalCount(), sum(self.maxes.values())))
-    if bonusPic and self.points.totalCount() == 25:
+    # print('Total: %d/%d' % (self.points.totalCount(), sum(self.maxes.values())))
+    print('Total: %d/%d' % (self.points.totalCount(), self.maxes))
+    if self.points.totalCount() == 25:
       print("""
 
                      ALL HAIL GRANDPAC.

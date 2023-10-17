@@ -370,7 +370,7 @@ def evaluate(generateSolutions = None, testRoot = None, moduleDict = dict(), exc
     # sys.modules[__name__] is the gradingModule : the module with all grading functions. 
     # grades.grade(sys.modules[__name__], bonusPic = projectParams.BONUS_PIC)
     print('grades.grade()')
-    grades.grade()
+    grades.grade(sys.modules[__name__])
     print('I am out of grades')
     print(grades.points)
     return grades.points

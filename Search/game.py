@@ -259,8 +259,8 @@ class GameStateData:
         """
         if prevState != None:
             
-            self.agent_pos=(0,0)                                                                                                                                                    
-            self.world=prevState.world
+	    self.world = World()
+            self.agent_pos = (0,0)                                                                                                                                                    
             self.num_agents=prevState.num_agents
             self.gold_pos=prevState.gold_pos
             self.lion_pos=prevState.lion_pos
