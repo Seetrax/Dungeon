@@ -125,6 +125,7 @@ def depthFirstSearch(problem : SearchProblem):
 
     return act
 def breadthFirstSearch(problem : SearchProblem):
+    print("inside fun")
     """Search the shallowest nodes in the search tree first."""
 
     visited2=[]
@@ -171,6 +172,7 @@ def breadthFirstSearch(problem : SearchProblem):
     path = path[::-1] 
     act=act[::-1]
 
+    act.reverse()
     return act
 
 def uniformCostSearch(problem: SearchProblem):

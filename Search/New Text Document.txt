@@ -4,6 +4,6 @@ options:
   -h, --help          show this help message and exit
   -method METHOD      change search method to any strategy
   -world WORLD        change maze config
-  -omni OMNI          change omniscience of the agent
+ -omni OMNI          change omniscience of the agent
   -p P                switch player from human to agent
   -graphics GRAPHICS  set graphics for the game

@@ -22,6 +22,12 @@ from collections import defaultdict
 import util
 import sys
 import csv
+import os
+
+from world import World
+from game import GameState
+
+import Search
 
 class Grades:
   "A data structure for project grades, along with formatting code to display them"
@@ -35,7 +41,9 @@ class Grades:
     # self.questions = [el[0] for el in questionsAndMaxesList]
     self.maxes = None
     self.method = None
-    self.questionClass = None
+    self.maze = None
+    self.question = None
+    self.acts = list()#solutionPath(self.method, problem) 
 
     f = open('currentQuestion.csv', 'r')
     row = csv.reader(f)
@@ -54,12 +62,15 @@ class Grades:
             print('True')
             self.method = i[1]
             self.maxes = int(i[2])
-            self.questionClass = i[3]
+            self.maze = i[3]
     f.close()
     print('maxes')
     print(self.maxes)
     print(self.method)
-    print(self.questionClass)
+    path = 'mazes'
+    self.maze = os.path.join("mazes", "medmaze.txt")
+    self.solution = os.path.join("dungeon_test", "q1", "q1.csv")
+    print(self.maze)
 
     # self.maxes = dict(questionsAndMaxesList)
     self.points = Counter()
@@ -108,7 +119,8 @@ class Grades:
           continue
 
       if self.mute: util.mutePrint()
-      try:
+      # try:
+      if(1):
         # this is an important line. 
         # print(getattr(gradingModule, q))
         # print('error potential line')
@@ -116,6 +128,76 @@ class Grades:
 	# the below line straight go to __call__ in class TimeoutFunction in util. 
 
         print('before important util')
+
+        world=World()
+        world.generate_world(self.maze)
+        # omni=args['omni']
+        # player=args['player']
+        #frames=0
+        #clock=pygame.time.Clock()
+        #screen=initialize(args)
+        lost=False
+        player_x=world.agent_col
+        player_y=world.agent_row
+        lion_pos=world.lion_pos
+        pit_pos=world.pits_pos
+        gold_pos=world.gold_pos
+        world.world[player_y][player_x].append('.')
+        g=GameState(world)
+        problem=Search.PosProblem(g,world,goal=(world.num_cols-1,world.num_rows-1)) 
+
+
+
+        print('here;?')
+        print(self.acts)
+
+        print('before hello')
+        print(self.method)
+        print(type(self.method))
+   #      if self.method =='breadthFirstSearch':
+        self.acts=Search.bfs(problem)
+        '''    
+        if self.method =='depthFirstSearch':
+            self.acts = acts
+            acts=Search.dfs(problem)
+            self.acts.concat(acts)
+        if self.method =='uniformCostSearch':
+            self.acts = acts
+            acts=Search.ucs(problem)
+            self.acts.concat(acts)
+        if self.method =='aStarSearch':
+            acts=Search.astar(problem)
+            self.acts.concat(acts)
+        '''
+        print("hello")
+        print(self.acts)
+
+        f = open(self.solution, 'r')
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            self.solution = row
+            break
+        f.close()
+        self.solution = eval(self.solution[0])
+        print('seethis')
+        print(self.solution)
+        print(type(self.solution))
+        print(self.acts)
+        print(type(self.acts))
+
+        
+        if(self.acts == self.solution):
+            self.points[q] = 3
+        else:
+            print("FAIL")
+            print("Your Solution")
+            print(self.acts)
+            print("Correct Solution")
+            print(self.solution)
+        print(self.points[q])
+	
+
         # util.TimeoutFunction(getattr(gradingModule, q),1800)(self) # Call the question's function
         # <function evaluate.<locals>.makefun.<locals>.<lambda> at 0x105560680>
         # util.TimeoutFunction(q,1800)(self) # Call the question's function
@@ -124,13 +206,13 @@ class Grades:
         # print('error potential line over')
         # sys.exit(1)
         #TimeoutFunction(getattr(gradingModule, q),1200)(self) # Call the question's function
-      except Exception as inst:
-        self.addExceptionMessage(q, inst, traceback)
-        self.addErrorHints(exceptionMap, inst, q[1])
-      except:
-        self.fail('FAIL: Terminated with a string exception.')
-      finally:
-        if self.mute: util.unmutePrint()
+      # except Exception as inst:
+      #  self.addExceptionMessage(q, inst, traceback)
+      #  self.addErrorHints(exceptionMap, inst, q[1])
+      #except:
+      #  self.fail('FAIL: Terminated with a string exception.')
+      #finally:
+      #  if self.mute: util.unmutePrint()
 
       if self.points[q] >= self.maxes:
         completedQuestions.add(q)
@@ -141,8 +223,9 @@ class Grades:
     print('\nFinished at %d:%02d:%02d' % time.localtime()[3:6])
     print("\nProvisional grades\n==================")
 
-    for q in self.question:
-      print('Question %s: %d/%d' % (q, self.points[q], self.maxes))
+    # for q in self.question:
+      # print('Question %s: %d/%d' % (q, self.points[q], self.maxes))
+    print('Question %s: %d/%d' % (q, self.points[q], self.maxes))
     print('------------------')
     # print('Total: %d/%d' % (self.points.totalCount(), sum(self.maxes.values())))
     print('Total: %d/%d' % (self.points.totalCount(), self.maxes))
@@ -349,7 +432,18 @@ to follow your instructor's guidelines to receive credit on your project.
       #print('%%% ' + line + ' %%%')
       #self.messages[self.currentQuestion].append(line)
 
+def solutionPath(method, problem):
+    print("in fun")
+    if(method == 'breadthFirstSearch') : 
+       return Search.bfs(problem)
+    if(method == 'depthFirstSearch') : 
+       return Search.dfs(problem)
+    if(method == 'uniformFirstSearch') : 
+       return Search.ucs(problem)
+    if(method == 'astarFirstSearch') : 
+       return Search.astar(problem)
 
+    pass
 
 
 
