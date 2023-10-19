@@ -172,7 +172,6 @@ def breadthFirstSearch(problem : SearchProblem):
     path = path[::-1] 
     act=act[::-1]
 
-    act.reverse()
     return act
 
 def uniformCostSearch(problem: SearchProblem):

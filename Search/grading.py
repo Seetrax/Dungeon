@@ -51,26 +51,26 @@ class Grades:
     for i in row:
         self.question = i[0] 
     f.close()
-    print(self.question)
+    #print(self.question)
     f = open('files.csv', 'r')
     row = csv.reader(f)
     next(row)
     for i in row:
-        print(i[0])
-        print(self.question)
+        # print(i[0])
+        # print(self.question)
         if int(i[0][2]) == int(self.question[1]):
-            print('True')
+            # print('True')
             self.method = i[1]
             self.maxes = int(i[2])
             self.maze = i[3]
     f.close()
-    print('maxes')
-    print(self.maxes)
-    print(self.method)
+    # print('maxes')
+    #print(self.maxes)
+    #print(self.method)
     path = 'mazes'
     self.maze = os.path.join("mazes", "medmaze.txt")
     self.solution = os.path.join("dungeon_test", "q1", "q1.csv")
-    print(self.maze)
+    # print(self.maze)
 
     # self.maxes = dict(questionsAndMaxesList)
     self.points = Counter()
@@ -127,7 +127,7 @@ class Grades:
         # sys.exit(1)
 	# the below line straight go to __call__ in class TimeoutFunction in util. 
 
-        print('before important util')
+        # print('before important util')
 
         world=World()
         world.generate_world(self.maze)
@@ -148,12 +148,12 @@ class Grades:
 
 
 
-        print('here;?')
-        print(self.acts)
+        # print('here;?')
+        # print(self.acts)
 
-        print('before hello')
-        print(self.method)
-        print(type(self.method))
+        #print('before hello')
+        #print(self.method)
+        #print(type(self.method))
    #      if self.method =='breadthFirstSearch':
         self.acts=Search.bfs(problem)
         '''    
@@ -169,8 +169,8 @@ class Grades:
             acts=Search.astar(problem)
             self.acts.concat(acts)
         '''
-        print("hello")
-        print(self.acts)
+        #print("hello")
+        #print(self.acts)
 
         f = open(self.solution, 'r')
         reader = csv.reader(f)
@@ -180,11 +180,11 @@ class Grades:
             break
         f.close()
         self.solution = eval(self.solution[0])
-        print('seethis')
-        print(self.solution)
-        print(type(self.solution))
-        print(self.acts)
-        print(type(self.acts))
+        #print('seethis')
+        #print(self.solution)
+        #print(type(self.solution))
+        #print(self.acts)
+        #print(type(self.acts))
 
         
         if(self.acts == self.solution):
@@ -201,7 +201,7 @@ class Grades:
         # util.TimeoutFunction(getattr(gradingModule, q),1800)(self) # Call the question's function
         # <function evaluate.<locals>.makefun.<locals>.<lambda> at 0x105560680>
         # util.TimeoutFunction(q,1800)(self) # Call the question's function
-        print('after important util')
+        #print('after important util')
         # sys.exit(1)
         # print('error potential line over')
         # sys.exit(1)
@@ -212,7 +212,7 @@ class Grades:
       #except:
       #  self.fail('FAIL: Terminated with a string exception.')
       #finally:
-      #  if self.mute: util.unmutePrint()
+      #if self.mute: util.unmutePrint()
 
       if self.points[q] >= self.maxes:
         completedQuestions.add(q)

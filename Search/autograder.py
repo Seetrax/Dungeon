@@ -83,7 +83,7 @@ def readCommand(argv):
     (options, args) = parser.parse_args(argv)
     # args2 = parser.parse_args(argv)
     # if args2.question : args['method'] = 
-    print(options)
+    # print(options)
     return options
 
 
@@ -351,13 +351,13 @@ def evaluate(generateSolutions = None, testRoot = None, moduleDict = dict(), exc
         questions.append((q, question.getMaxPoints()))
     '''
     # grades object is grades object in grading.py
-    print('before grade')
+    # print('before grade')
     grades = grading.Grades(projectParams.PROJECT_NAME, question,
                             gsOutput=gsOutput, edxOutput=edxOutput, muteOutput=muteOutput)
-    print('after grade')
-    print(grades)
+    #print('after grade')
+    #print(grades)
     from pprint import pprint
-    pprint(vars(grades))
+    #pprint(vars(grades))
     # questionToGrade = 'q1'
     '''
     if questionToGrade == None:
@@ -369,10 +369,10 @@ def evaluate(generateSolutions = None, testRoot = None, moduleDict = dict(), exc
     # till now it seems the question is not being evaluated. 
     # sys.modules[__name__] is the gradingModule : the module with all grading functions. 
     # grades.grade(sys.modules[__name__], bonusPic = projectParams.BONUS_PIC)
-    print('grades.grade()')
+    #print('grades.grade()')
     grades.grade(sys.modules[__name__])
-    print('I am out of grades')
-    print(grades.points)
+    #print('I am out of grades')
+    # print(grades.points)
     return grades.points
 
 
@@ -393,7 +393,7 @@ def getDisplay(graphicsByDefault, options=None):
 
 
 if __name__ == '__main__':
-    print('Hello')
+    # print('Hello')
     options = readCommand(sys.argv)   
     question = str(options.gradeQuestion)
     method = None
