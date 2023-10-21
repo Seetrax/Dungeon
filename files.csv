@@ -1,0 +1,5 @@
+question, method, maxMarks, file
+'q1', 'breadthFirstSearch', 3, "medmaze.txt"
+'q2', 'depthFirstSearch', 3, "medmaze.txt"
+'q3', 'uniformCostSearch', 3, "medmaze.txt"
+'q4', 'aStarSearch', 3, "medmaze.txt"
