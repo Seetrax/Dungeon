@@ -17,6 +17,11 @@
 
 ### How to Play
 
+To play, run this command : 
+```
+python gui.py
+```
+
 1. **Movement**: You can move one room at a time, but only through connecting tunnels.
 
 2. **Actions**:
