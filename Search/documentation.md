@@ -63,6 +63,7 @@ Your code should quickly find a solution for:
 ```  dungeon.py tinymaze
 mediumMaze
 bigMaze
+```
 
 Grading: Please run the following command to see if your implementation passes all the autograder test cases.
 
