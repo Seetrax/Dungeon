@@ -6,7 +6,7 @@ import time
 from grid_label import Grid_Label
 import MultiAgents
 from game import GameState
-from human import Agent
+from agents import Agent
 ##CONSTANTS FOR THE GAME############################################
 count=0
 countl=0
@@ -18,12 +18,12 @@ DIRECTION_L=0
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-args = {'world':os.path.join('mazes','world2.txt'),'frames':10,'omni':True,'player':'agent','method':'minimax'}
+args = {'world':os.path.join('mazes','world2.txt'),'frames':10,'omni':True,'player':'agent','method':'expectiminimax','graphics':False}
 W=World()
 W.generate_world(args['world'])
 WIDTH,HEIGHT = 900,450
 if args['world']== os.path.join('mazes','world.txt') :
-        WIDTH, HEIGHT = 900,450
+        WIDTH, HEIGHT = 900,500
 if args['world']== os.path.join('mazes','world2.txt') :
         WIDTH, HEIGHT = 900,300
 COL, ROW = W.num_cols,W.num_rows
@@ -55,9 +55,9 @@ def initialize(arg):
     
     W=World()
     W.generate_world(arg['world'])
-    if arg['world']== 'world.txt' :
-        WIDTH, HEIGHT = 900,450
-    if arg['world']== 'world2.txt' :
+    if arg['world']== os.path.join('mazes','world.txt') :
+        WIDTH, HEIGHT = 900,500
+    if arg['world']== os.path.join('mazes','world2.txt') :
         WIDTH, HEIGHT = 900,300
     COL, ROW = W.num_cols,W.num_rows
     GRID_W = WIDTH//COL
@@ -142,7 +142,8 @@ def game(args):
     method=args['method']
     frames=0
     clock=pygame.time.Clock()
-    screen=initialize(args)
+    if args['graphics']==True:
+            screen=initialize(args)
     lost=False
     player_x=world.agent_col
     player_y=world.agent_row
@@ -158,7 +159,12 @@ def game(args):
     for i in range(world.num_agents):
         entities.append(MultiAgents.lion(i+1))
         arrival_act.append(None)
-    predict=MultiAgents.MinimaxAgent()
+    if method =='minimax':
+        predict=MultiAgents.MinimaxAgent()
+    if method =='abminimax':
+        predict=MultiAgents.AlphaBetaAgent()
+    if method =='expectiminimax':
+        predict=MultiAgents.ExpectimaxAgent()
     flag=0
     ##world.world[player_y][player_x].append('A')
     while running:
@@ -171,7 +177,7 @@ def game(args):
             count+=1
         else:
             count=0
-        if player=='human':
+        if player=='human' and args['graphics']==True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -201,10 +207,19 @@ def game(args):
                         if '.' not in world.world[player_y][player_x]:
                             world.world[player_y][player_x].append('.')
                         DIRECTION=0
-        elif player=='agent' and method=='minimax':
+        elif player=='agent' :
                     if frames == 5:
                         if flag==0:
-                            agent.move(predict.getAction(g),0)
+                            act=predict.getAction(g)
+                            agent.move(act,0)
+                            if act=='u':
+                                    DIRECTION=2
+                            elif act=='d':
+                                    DIRECTION=3
+                            elif act=='l':
+                                    DIRECTION=1
+                            elif act=='r':
+                                    DIRECTION=0
                             flag=1
                         elif flag==1:
                             for i in range(world.num_agents-1):
@@ -235,23 +250,24 @@ def game(args):
                         lost=True
                     else:
                         #print('no')
-                        pass                  
-        screen.fill((0, 0,0))
-        screen.blit(BG, (0, 0))
-        #draw_grid()
-        draw_player(world.agent_pos[0],world.agent_pos[1],screen)
-        for i in range(world.num_rows):
-            for j in range(world.num_cols):
-                if 'L' in world.world[i][j]:
-                    draw_lion(j, i,screen)
-                if 'P' in world.world[i][j]:
-                    draw_entity(j, i,PIT_IMG,screen)
-                if 'G' in world.world[i][j]:
-                    draw_entity(j, i,GOLD_IMG,screen)
-                if 'V' in world.world[i][j]:
-                    draw_entity(j, i,WALL_IMG,screen)
-                if '.' not in world.world[i][j] and omni==False:
-                    draw_entity(j, i,BUSH_IMG,screen)
+                        pass
+        if args['graphics']==True:
+                screen.fill((0, 0,0))
+                screen.blit(BG, (0, 0))
+                #draw_grid()
+                draw_player(world.agent_pos[0],world.agent_pos[1],screen)
+                for i in range(world.num_rows):
+                    for j in range(world.num_cols):
+                        if 'L' in world.world[i][j]:
+                            draw_lion(j, i,screen)
+                        if 'P' in world.world[i][j]:
+                            draw_entity(j, i,PIT_IMG,screen)
+                        if 'G' in world.world[i][j]:
+                            draw_entity(j, i,GOLD_IMG,screen)
+                        if 'V' in world.world[i][j]:
+                            draw_entity(j, i,WALL_IMG,screen)
+                        if '.' not in world.world[i][j] and omni==False:
+                            draw_entity(j, i,BUSH_IMG,screen)
         if g.isGold():
             world.score+=50
             world.gold_pos.remove((world.agent_col,world.agent_row))
@@ -262,8 +278,9 @@ def game(args):
         elif g.isWin():
             world.score+=1000
             running=False
-        pygame.display.flip()
-        clock.tick(fps)
+        if args['graphics']==True:
+                pygame.display.flip()
+                clock.tick(fps)
     if lost==True:
         print("YOU LOST")
     elif lost==False:

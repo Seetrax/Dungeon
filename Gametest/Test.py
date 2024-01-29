@@ -5,6 +5,7 @@ from world import World
 import time
 
 count=0
+countl=0
 
 fps=60
 timer=pygame.time.Clock()
@@ -25,6 +26,10 @@ PLAYER_IMG_U = [pygame.transform.scale(pygame.image.load(f'Agents/Player/Player_
 PLAYER_IMG_D = [pygame.transform.scale(pygame.image.load(f'Agents/Player/Player_d{i}.png'),(GRID_SIZE,GRID_SIZE)) for i in range (1,4)]
 PLAYER_IMG_R = [pygame.transform.scale(pygame.image.load(f'Agents/Player/Player_r{i}.png'),(GRID_SIZE,GRID_SIZE)) for i in range (1,4)]
 PLAYER_IMG_L = [pygame.transform.flip(i,True,False) for i in PLAYER_IMG_R]
+LION_IMG_U = [pygame.transform.scale(pygame.image.load(f'Agents/lion/{i}.png'),(GRID_SIZE,GRID_SIZE)) for i in range (1,5)]
+LION_IMG_R = [pygame.transform.scale(pygame.image.load(f'Agents/lion/{i}.png'),(GRID_SIZE,GRID_SIZE)) for i in range (1,5)]
+LION_IMG_L = [pygame.transform.flip(i,True,False) for i in LION_IMG_R]
+LION_IMG_D = [pygame.transform.scale(pygame.image.load(f'Agents/lion/{i}.png'),(GRID_SIZE,GRID_SIZE)) for i in range (1,5)]
 
 WUMPUS_IMG = pygame.transform.scale(pygame.image.load(os.path.join('Agents','lion.png')),(GRID_SIZE,GRID_SIZE))
 PIT_IMG = pygame.transform.scale(pygame.image.load(os.path.join('Agents','pit2.png')),(GRID_SIZE,GRID_SIZE))
@@ -54,15 +59,14 @@ def draw_entity(x, y,img):
 
 def draw_lion(x, y):
     if DIRECTION_L==0:##RIGHT
-        
-        screen.blit(pygame.transform.flip(WUMPUS_IMG,True,False),(x* GRID_SIZE,y* GRID_SIZE))
+        screen.blit(LION_IMG_R[countl//8],(x* GRID_SIZE,y* GRID_SIZE))
     elif DIRECTION_L==1:##LEFT
 
-        screen.blit(WUMPUS_IMG,(x* GRID_SIZE,y* GRID_SIZE))
+        screen.blit(LION_IMG_L[countl//8],(x* GRID_SIZE,y* GRID_SIZE))
     elif DIRECTION_L==2:##UP
-        screen.blit(pygame.transform.rotate(WUMPUS_IMG,270),(x* GRID_SIZE,y* GRID_SIZE))
+        screen.blit(LION_IMG_U[countl//8],(x* GRID_SIZE,y* GRID_SIZE))
     elif DIRECTION_L==3:##DOWN
-        screen.blit(pygame.transform.rotate(WUMPUS_IMG,90),(y* GRID_SIZE,y* GRID_SIZE))
+        screen.blit(LION_IMG_D[countl//8],(x* GRID_SIZE,y* GRID_SIZE))
     
 
 def draw_player(x, y):
@@ -80,7 +84,7 @@ def draw_player(x, y):
 
 
 def main(world,omni=False):
-    global DIRECTION,count
+    global DIRECTION,count,countl
     lost=False
     player_x=world.agent_col
     player_y=world.agent_row
@@ -91,6 +95,10 @@ def main(world,omni=False):
     running = True
     while running:
         timer.tick(fps)
+        if countl<31:
+            countl+=1
+        else:
+            countl=0
         if count<23:
             count+=1
         else:
@@ -161,4 +169,4 @@ def main(world,omni=False):
         print("YOU WIN")
     pygame.quit()
     sys.exit()
-main(W)
+main(W,omni=True)

@@ -50,7 +50,6 @@ class World:
             self.world[int(file_parser.gold[1])][int(file_parser.gold[2])].append(file_parser.gold[0])
             self.gold_pos.append((int(file_parser.gold[2]),int(file_parser.gold[1])))'''
         
-        
         if len(file_parser.lions[0])>1:
             for wum in file_parser.lions:
             

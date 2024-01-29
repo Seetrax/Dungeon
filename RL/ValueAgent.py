@@ -1,5 +1,17 @@
 from lAgents import ValueEstAgent
 import MDP,util
+'''ValueIterAgent is a child class of ValueEstAgent. Some of the important
+features of this class :
+
+    runValueIteration -  runs value iteration on the mdp numTraining no of iterations
+    getvalue - gets the value corresponding to to a state of mdp
+    computeQValueFromValues - computes Q-value of a state action pair
+    computeActionFromValues - returns action that maximises the expected value of the successors of the state
+    getAction -  return an action at random with probablity of epsilon or returns the Actions based on Q values
+    getPolicy - returns policy associated with the state
+    getValue - returns Value associated with the state
+    '''
+
 class ValueIterAgent(ValueEstAgent):
     def __init__(self,world,omni=False, discount = 0.9, iterations = 100):
         self.world = world
@@ -31,7 +43,17 @@ class ValueIterAgent(ValueEstAgent):
         self.iterations = iterations
         self.values = util.Counter() # A Counter is a dict with default 0
         self.runValueIteration()
-
+    def print_values(self,v):
+        arr=[]
+        for i in range(self.world.num_rows):
+            arr.append([])
+        for i in range(self.world.num_rows):
+            for j in range(self.world.num_cols):
+                arr[i].append(round(v[(j,i)],2))
+        for i in range(self.world.num_rows):
+            for j in range(self.world.num_cols):
+                print (f"{arr[i][j]}   ",end="")
+            print()
     def runValueIteration(self):
         """
           Run the value iteration algorithm. Note that in standard
@@ -55,7 +77,6 @@ class ValueIterAgent(ValueEstAgent):
                         if maxi<v:
                                maxi=v
                     self.values[i]=maxi
-        print(self.values)
     def getValue(self, state):
         return self.values[state]
 

@@ -24,7 +24,10 @@ if args2.frames :
 if args2.p :
     args['player']=args2.p
 if args2.graphics :
-    args['graphics']=args2.graphics
+    if args2.graphics =='True':
+        args['graphics']=True
+    else:
+        args['graphics']=False
 gui.game(args)
 
 ##elif args['graphics']==False:

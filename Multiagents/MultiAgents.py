@@ -165,3 +165,127 @@ class MinimaxAgent(MultiAgentSearchAgent):
         
         return list(ut.keys())[list(ut.values()).index(m1)]
         util.raiseNotDefined()
+class AlphaBetaAgent(MultiAgentSearchAgent):
+    """
+    Your minimax agent with alpha-beta pruning (question 3)
+    """
+    
+    def evalsa(self,gameState,index,depth,alpha,beta):
+        
+        if   depth==0 or gameState.getActions(index)==[]:
+            self.ut[(gameState,None)]=self.evaluationFunction(gameState)
+            if gameState.isWin():
+                return self.evaluationFunction(gameState)
+            elif gameState.isLose():
+                return self.evaluationFunction(gameState)
+            else:
+                return self.evaluationFunction(gameState)
+        elif index==0:
+            maxi=-9999
+            for i in gameState.getActions(index):
+                if index+1==self.n2:
+                    ev=self.evalsa(gameState.generateSuccessor(index,i),0,depth-1,alpha,beta)
+                    
+                else:
+                    ev=self.evalsa(gameState.generateSuccessor(index,i),index+1,depth,alpha,beta)
+                
+                maxi=max(maxi,ev)
+                self.ut[(gameState,i)]=maxi
+                if maxi>beta:
+                    return maxi
+                alpha=max(alpha,maxi)
+                
+            return maxi
+        elif index!=0:
+            mini=9999
+            for i in gameState.getActions(index):
+                if index+1==self.n2:
+                    ev=self.evalsa(gameState.generateSuccessor(index,i),0,depth-1,alpha,beta)
+                 
+
+                else:
+                    ev=self.evalsa(gameState.generateSuccessor(index,i),index+1,depth,alpha,beta)
+                mini=min(mini,ev)
+                self.ut[(gameState,i)]=mini
+                if mini<alpha:
+                    return mini
+                
+                beta=min(beta,mini)
+                
+
+            return mini
+
+    def getAction(self, gameState):
+        """
+        Returns the minimax action using self.depth and self.evaluationFunction
+        """
+        "*** YOUR CODE HERE ***"
+        self.ut={}
+        self.n2=gameState.num_agents
+        v=self.evalsa(gameState,self.index,self.depth,-999999,999999)
+        action=None
+        mm=-999999
+        for i in gameState.getActions(self.index):
+            if self.ut[(gameState,i)]>mm:
+                mm=self.ut[(gameState,i)]
+                action=i
+        return action
+        util.raiseNotDefined()
+
+class ExpectimaxAgent(MultiAgentSearchAgent):
+    """
+      Your expectimax agent (question 4)
+    """
+    def evalse(self,gameState,index,depth):
+        if   depth==0 or gameState.getActions(index)==[]:
+            if gameState.isWin():
+                return self.evaluationFunction(gameState)
+            elif gameState.isLose():
+                return self.evaluationFunction(gameState)
+            else:
+                return self.evaluationFunction(gameState)
+        elif index==0:
+            maxi=-9999
+            for i in gameState.getActions(index):
+                if index+1==self.n3:
+                    ev=self.evalse(gameState.generateSuccessor(index,i),0,depth-1)
+                else:
+                    ev=self.evalse(gameState.generateSuccessor(index,i),index+1,depth)
+                maxi=max(maxi,ev)
+            return maxi
+        elif index!=0:
+            ev=0
+            mini=9999
+            for i in gameState.getActions(index):
+                prob=1/len(gameState.getActions(index))
+                if index+1==self.n3:
+                    ev+=prob*self.evalse(gameState.generateSuccessor(index,i),0,depth-1)
+                else:
+                    ev+=prob*self.evalse(gameState.generateSuccessor(index,i),index+1,depth)
+            
+
+            return ev
+                
+
+            return mini
+    def getAction(self, gameState):
+        """
+        Returns the expectimax action using self.depth and self.evaluationFunction
+
+        All ghosts should be modeled as choosing uniformly at random from their
+        legal moves.
+        """
+        "*** YOUR CODE HERE ***"
+        ut={}
+        self.n3=gameState.num_agents
+        for i in gameState.getActions(self.index):
+            if self.n3>1:
+                    ut[i]=self.evalse(gameState.generateSuccessor(self.index,i),self.index+1,self.depth)
+            else:
+                    ut[i]=self.evalse(gameState.generateSuccessor(self.index,i),self.index,self.depth)
+            ##ut[i]=self.evals(gameState.generateSuccessor(self.index,i),self.depth-1)
+            
+       
+        m1=max(ut.values())
+        return list(ut.keys())[list(ut.values()).index(m1)]
+        util.raiseNotDefined()

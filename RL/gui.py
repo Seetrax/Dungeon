@@ -3,14 +3,13 @@ import sys
 import os
 from world import World
 import time
-from grid_label import Grid_Label
 from ValueAgent import ValueIterAgent
 from QlearnAgent import QLearningAgent
 from game import GameState
-from human import Agent
+from agents import Agent
 import MDP
 import random
-##CONSTANTS FOR THE GAME############################################
+#CONSTANTS FOR THE GAME############################################
 count=0
 countl=0
 
@@ -21,7 +20,7 @@ DIRECTION_L=0
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-args = {'world':os.path.join('mazes','world.txt'),'frames':10,'omni':True,'player':'agent','method':'qlearn'}
+args = {'world':os.path.join('mazes','world.txt'),'frames':10,'omni':True,'player':'agent','method':'valearn','graphics':True}
 W=World()
 W.generate_world(args['world'])
 WIDTH,HEIGHT = 800,700
@@ -54,50 +53,38 @@ def runEpisode(agent, mdp,discount):
     totalDiscount = 1.0
     agent.startEpisode()
     state = mdp.getStartState()
+    nextState=None
     while True:
-
         # DISPLAY CURRENT STATE
-        print("HOHO")
-        print(state)
         actions = mdp.getActions(state)
-        if len(actions) == 0:
-            print("EPISODE "" COMPLETE: RETURN WAS "+str(returns)+"\n")
+      
+        if len(actions) == 0: 
             return returns
-        
-        # GET ACTION (USUALLY FROM AGENT)
-        
         action = agent.getAction(state)
         if action == None:
             raise Exception('Error: Agent returned None action')
-
-        # EXECUTE ACTION
-        nextState=None
+        nex=[]
+        probs=[]
         reward=0
         rand=random.random()
         successors = mdp.TransitionStates(state, action)
-        print(action)
-        print(actions)
-        print(successors)
-        sum=0
-        for ns, prob in successors:
-            sum += prob
-            if rand < sum:
-                reward = mdp.getReward(state, action, ns)
-                nextState=ns
-                break
-        print("Started in state: "+str(state)+
-                "\nTook action: "+str(action)+
-                "\nEnded in state: "+str(nextState)+
-                "\nGot reward: "+str(reward)+"\n")
+        for i in successors:
+            probs.append(i[1])
+            nex.append(i[0])
+        if sum(probs)==0:
+            nextState=state
+        else:
+            a=random.choices(nex,weights=probs,k=1)[0]
+            nextState=a
+        reward=mdp.getReward(state,action,nextState)
         # UPDATE LEARNER
         agent.observeTransition(state, action, nextState, reward)
 
         returns += reward * totalDiscount
         totalDiscount *= discount
         state=nextState
-
+     
     agent.stopEpisode()
-
 
 
 
@@ -191,11 +178,14 @@ def game(args):
     world=World()
     world.generate_world(args['world'])
     omni=args['omni']
+    if omni==False:
+            world.populate_indicators()
     player=args['player']
     method=args['method']
     frames=0
     clock=pygame.time.Clock()
-    screen=initialize(args)
+    if args['graphics']==True:
+        screen=initialize(args)
     lost=False
     player_x=world.agent_col
     player_y=world.agent_row
@@ -214,6 +204,7 @@ def game(args):
         agent = ValueIterAgent(world,omni=True)
     else:
         agent=Agent(world,omni=True)
+    
     entities=[]
     arrival_act=[]
     
@@ -229,7 +220,7 @@ def game(args):
             count+=1
         else:
             count=0
-        if player=='human':
+        if player=='human' and args['graphics']==True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -261,13 +252,8 @@ def game(args):
                         DIRECTION=0
         elif player=='agent' :
             if method=='qlearn':
-                for i in range(numTraining):
-                    agent.startEpisode()
-                    
-                    
-            if method=='valearn':
                     if frames == 15:
-                        act=agent.getAction(world.agent_pos)
+                        act=agent.computeActionFromQValues(world.agent_pos)
                         agent.move(act,0)
                         print(act)
                         if act=='u':
@@ -282,8 +268,40 @@ def game(args):
                         frames=0
                     else :
                         frames+=1
-                    for i in range(world.num_agents-1):
-                        g.last_move[i]=arrival_act[i]
+                    if g.isGold():
+                        world.score+=50
+                        world.gold_pos.remove((world.agent_col,world.agent_row))
+                    elif g.isLose():
+                        world.score-=1000
+                        lost=True
+                        
+                    elif g.isWin():
+                        world.score+=1000
+
+                    
+                    g=GameState(world)
+                    if g.isLose():
+                        lost=True
+                    else:
+                        #print('no')
+                        pass 
+            if method=='valearn':
+                    if frames == args['frames']:
+                        act=agent.getAction(world.agent_pos)
+                        agent.move(act,0)
+                        
+                        if act=='u':
+                            DIRECTION=2
+                        elif act=='d':
+                            DIRECTION=3
+                        elif act=='l':
+                            DIRECTION=1
+                        elif act=='r':
+                            DIRECTION=0
+                        ##agent.move(predict.getAction(g.agent_pos),0)
+                        frames=0
+                    else :
+                        frames+=1
                     if g.isGold():
                         world.score+=50
                         world.gold_pos.remove((world.agent_col,world.agent_row))
@@ -301,23 +319,44 @@ def game(args):
                         lost=True
                     else:
                         #print('no')
-                        pass                  
-        screen.fill((0, 0,0))
-        screen.blit(BG, (0, 0))
-        #draw_grid()
-        draw_player(world.agent_pos[0],world.agent_pos[1],screen)
-        for i in range(world.num_rows):
-            for j in range(world.num_cols):
-                if 'L' in world.world[i][j]:
-                    draw_lion(j, i,screen)
-                if 'P' in world.world[i][j]:
-                    draw_entity(j, i,PIT_IMG,screen)
-                if 'G' in world.world[i][j]:
-                    draw_entity(j, i,GOLD_IMG,screen)
-                if 'V' in world.world[i][j]:
-                    draw_entity(j, i,WALL_IMG,screen)
-                if '.' not in world.world[i][j] and omni==False:
-                    draw_entity(j, i,BUSH_IMG,screen)
+                        pass
+        if args['graphics']==True:
+            screen.fill((0, 0,0))
+            screen.blit(BG, (0, 0))
+            #draw_grid()
+            if method=='valearn':
+                for i in agent.values:
+                    if agent.values[i]<0 and i not in world.wall_pos:
+                            trans_surface = pygame.Surface((GRID_W, GRID_L), pygame.SRCALPHA)
+                            pygame.draw.rect(trans_surface, (255*(-1*(agent.values[i]/10)), 0, 0, 128), (0, 0,GRID_W, GRID_L))
+                            screen.blit(trans_surface, (i[0]*GRID_W, i[1]*GRID_L))
+                    if agent.values[i]>0 and i not in world.wall_pos:
+                            trans_surface = pygame.Surface((GRID_W, GRID_L), pygame.SRCALPHA)
+                            pygame.draw.rect(trans_surface, (0, 255*(agent.values[i]/10), 0, 128), (0, 0,GRID_W, GRID_L))
+                            screen.blit(trans_surface, (i[0]*GRID_W, i[1]*GRID_L))
+            for i in range(world.num_rows):
+                for j in range(world.num_cols):
+                    if 'L' in world.world[i][j]:
+                        draw_lion(j, i,screen)
+                    if 'P' in world.world[i][j]:
+                        draw_entity(j, i,PIT_IMG,screen)
+                    if 'G' in world.world[i][j]:
+                        draw_entity(j, i,GOLD_IMG,screen)
+                    if 'V' in world.world[i][j]:
+                        draw_entity(j, i,WALL_IMG,screen)
+                    '''if 'R' in world.world[i][j] and omni==False:
+                        trans_surface = pygame.Surface((GRID_W, GRID_L), pygame.SRCALPHA)
+                        pygame.draw.rect(trans_surface, (255, 0, 0, 128), (0, 0,GRID_W, GRID_L))
+                        screen.blit(trans_surface, (j*GRID_W, i*GRID_L))
+                    if 'B' in world.world[i][j] and omni==False:
+                        trans_surface = pygame.Surface((GRID_W, GRID_L), pygame.SRCALPHA)
+                        pygame.draw.rect(trans_surface, (0, 255, 0, 128), (0, 0,GRID_W, GRID_L))
+                        screen.blit(trans_surface, (j*GRID_W, i*GRID_L))'''
+                    if '.' not in world.world[i][j] and omni==False:
+                        draw_entity(j, i,BUSH_IMG,screen)
+            draw_player(world.agent_pos[0],world.agent_pos[1],screen)
+
+        
         if g.isGold():
             world.score+=50
             world.gold_pos.remove((world.agent_col,world.agent_row))
@@ -328,8 +367,9 @@ def game(args):
         elif g.isWin():
             world.score+=1000
             running=False
-        pygame.display.flip()
-        clock.tick(fps)
+        if args['graphics']==True:
+            pygame.display.flip()
+            clock.tick(fps)
     if lost==True:
         print("YOU LOST")
     elif lost==False:
